@@ -11,6 +11,7 @@
 	const scroll = ref(null);
 	let socket;
 	const room = route.query.id || route.params.id || store.id;
+	store.id = room;
 	onMounted(() => {
 		const ws = import.meta.env.VITE_SOCKET || import.meta.env.BASE_URL;
 		socket = io(`${ws}`);
