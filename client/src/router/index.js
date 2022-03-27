@@ -25,7 +25,7 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue'),
       beforeEnter: (to, from, next) => {
         const store = useIdStore();
-        const id = to.params.id || store.id;
+        const id = to.query.id || to.params.id || store.id;
         if (id && id.length === 8) {
           next()
         } else {

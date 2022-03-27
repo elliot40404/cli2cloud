@@ -1,9 +1,10 @@
 <script setup>
 	import { ref } from 'vue';
-	import { useRouter } from 'vue-router';
+	import { useRouter, useRoute } from 'vue-router';
 	import { useIdStore } from '../stores/main';
 	const store = useIdStore();
 	const router = useRouter();
+	const route = useRoute();
 	const id = ref("");
 	const submit = () => {
 		store.setId(id.value);

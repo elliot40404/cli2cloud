@@ -4,15 +4,19 @@ package main
 
 import (
 	"fmt"
+	"github.com/jkomyno/nanoid"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
-	"github.com/jkomyno/nanoid"
 )
 
 func checkKey() (exists bool, value string) {
-	id, err := ioutil.ReadFile("c2c.dat")
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+	}
+	id, err := ioutil.ReadFile(userHomeDir + "/c2c.dat")
 	if err != nil {
 		fmt.Println("No key found")
 		fmt.Println("Creating new key...")
@@ -25,15 +29,20 @@ func checkKey() (exists bool, value string) {
 }
 
 func createKey() {
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+	}
 	id, err := nanoid.Nanoid(8)
 	if err != nil {
 		fmt.Println(err)
 	}
-	writeErr := ioutil.WriteFile("c2c.dat", []byte(id), 0777)
+	writeErr := ioutil.WriteFile(userHomeDir+"/c2c.dat", []byte(id), 0777)
 	if err != nil {
 		fmt.Println(writeErr)
 	}
 	fmt.Printf("Created key: %s\n", id)
+	fmt.Printf("Web interface: https://cli2cloud.herokuapp.com/#/cli?id=%s", id)
 }
 
 func sendData(data string, value string) {
@@ -42,6 +51,7 @@ func sendData(data string, value string) {
 		"room": {value},
 	}
 	_, err := http.PostForm("https://cli2cloud.herokuapp.com/api/v1/socket", post)
+	// _, err := http.PostForm("http://localhost:8080/api/v1/socket", post)
 	if err != nil {
 		panic(err)
 	}
@@ -53,6 +63,7 @@ func printHelp() {
 	exists, value := checkKey()
 	if exists {
 		fmt.Printf("Key: %s\n", value)
+		fmt.Printf("Web-UI: https://cli2cloud.herokuapp.com/#/cli?id=%s\n", value)
 	}
 	fmt.Println("Version: 0.1.0")
 	fmt.Println("Usage:")
@@ -69,6 +80,8 @@ func main() {
 				fmt.Println(err)
 				os.Exit(1)
 			}
+			println(string(data))
+			fmt.Printf("Web-UI: https://cli2cloud.herokuapp.com/#/cli?id=%s\n", value)
 			sendData(string(data), value)
 		} else {
 			printHelp()
