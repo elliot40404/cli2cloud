@@ -33,5 +33,3 @@ db/
 .env.*.local
 .env
 *.dat
-cli/c2c
-cli/c2c.exe
