@@ -27,11 +27,42 @@ Version: 0.1.0
 
 ## Installation
 
+### Clone the repo
+
 ```sh
 git clone https://github.com/elliot40404/cli2cloud
 cd cli2cloud/cli
-go build
+go install
+# The binaries are also available in the bin directory
 ```
+
+or
+
+### Direcly download the binary for linux with curl or wget
+
+```sh
+  wget https://github.com/elliot40404/cli2cloud/releases/latest/download/c2c
+```
+
+```sh
+  curl -L -o c2c https://github.com/elliot40404/cli2cloud/releases/latest/download/c2c
+```
+
+```sh
+  chmod +x c2c
+```
+
+```sh
+  sudo ln -s $(pwd)/c2c /usr/local/bin/c2c
+```
+
+### Direcly download the binary for windows
+
+[Windows-Binary](https://github.com/elliot40404/cli2cloud/releases/latest/download/c2c.exe)
+
+### Checkout all releases
+
+[Releases](https://github.com/elliot40404/cli2cloud/releases)
 
 ## Usage
 
@@ -58,7 +89,8 @@ Key: 4MQrxK9p
 Web-UI: https://cli2cloud.herokuapp.com/4MQrxK9p
 Version: 0.1.0
 Usage:
-    $ command | c2c - pipe stdout to web
+    $ command | c2c     - pipe stdout to web
+    $ command | c2c -q  - pipe stdout to web quite mode
     $ c2c           - print this help menu
                       also generates a new key if none exists
 ```
@@ -67,11 +99,67 @@ Usage:
 
 Open up a browser and go to `https://cli2cloud.herokuapp.com/#/cli?id=<key>`
 
-### 5. Now you can pipe the output to the web
+#### 5. Pipe the stdout to the web
 
 ```sh
 echo "Hello World" | c2c
 ```
+
+#### 5. Pipe the stdout and stderr to the web
+
+```sh
+echo "Hello World" |& c2c
+```
+
+#### 5. Pipe the stderr to the web
+
+```sh
+echo "Hello World" 2>&1 >/dev/null | c2c
+```
+
+## Advanced Usage
+
+### Continous Mode
+
+Put this snippet in a file. I am calling mine `term.sh`
+
+```sh
+#!/bin/bash
+while true
+do
+  read -p "$USER@c2c in $(basename $PWD)\$ " p
+  $p |& c2c -q
+done
+```
+
+```sh
+sudo chmod +x term.sh
+sudo ./term.sh
+```
+
+This should run the command in a loop and give you a terminal like interface and piping to the web withouth the need to pipe.
+
+> This is in no way an actual terminal interface. It is just a way/hack to pipe to the web without the need to pipe every command. This lacks basic terminal features like history and tab completion, ability backout of a dir. But it is a start.
+
+![cli2cloud web interface](./screenshots/term.png)
+
+I am working on an actual way to pipe stdout and stderr with the actual terminal interface.
+
+## Screenshots
+
+![cli2cloud web interface](./screenshots/ui.png)
+![cli2cloud web interface](./screenshots/ui2.png)
+
+Default example
+
+![cli2cloud cli interface](./screenshots/cli.png)
+
+Passing the -q flag to c2c will not print the url
+
+![cli2cloud cli interface](./screenshots/cli2.png)
+
+> NOTE: Your key is stored in the `~/c2c.dat` file.
+> If you want to change the key you can delete the file and run `c2c` again.
 
 ## License
 

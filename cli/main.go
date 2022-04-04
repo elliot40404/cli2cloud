@@ -42,7 +42,7 @@ func createKey() {
 		fmt.Println(writeErr)
 	}
 	fmt.Printf("Created key: %s\n", id)
-	fmt.Printf("Web interface: https://cli2cloud.herokuapp.com/#/cli?id=%s", id)
+	fmt.Printf("Web interface: https://cli2cloud.herokuapp.com/#/cli?id=%s\n", id)
 }
 
 func sendData(data string, value string) {
@@ -65,12 +65,14 @@ func printHelp() {
 		fmt.Printf("Key: %s\n", value)
 		fmt.Printf("Web-UI: https://cli2cloud.herokuapp.com/#/cli?id=%s\n", value)
 	}
-	fmt.Println("Version: 0.1.0")
+	fmt.Println("Version: 0.1.1")
 	fmt.Println("Usage:")
 	fmt.Println("\t$ command | c2c")
+	fmt.Println("\t$ command | c2c q  quiet mode")
 }
 
 func main() {
+	args := os.Args[1:]
 	exists, value := checkKey()
 	if exists {
 		stat, _ := os.Stdin.Stat()
@@ -81,7 +83,9 @@ func main() {
 				os.Exit(1)
 			}
 			println(string(data))
-			fmt.Printf("Web-UI: https://cli2cloud.herokuapp.com/#/cli?id=%s\n", value)
+			if len(args) == 0 {
+				fmt.Printf("Web-UI: https://cli2cloud.herokuapp.com/#/cli?id=%s\n", value)
+			}
 			sendData(string(data), value)
 		} else {
 			printHelp()
